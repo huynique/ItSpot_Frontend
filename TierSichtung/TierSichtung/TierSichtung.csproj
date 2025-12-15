@@ -6,6 +6,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
 
 </Project>

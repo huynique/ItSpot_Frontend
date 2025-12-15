@@ -1,5 +1,8 @@
 ﻿using System.IO;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TierSichtung
 {
@@ -23,7 +27,7 @@ namespace TierSichtung
             LoadRecent();
         }
 
-        private void Search(object sender, TextChangedEventArgs e)
+        private void Search(object sender, TextChangedEventArgs e)  //verknüpft
         {
             TextBox textBox = sender as TextBox;
 
@@ -39,23 +43,28 @@ namespace TierSichtung
 
             try
             {
-                string[] tiere = File.ReadAllLines("Tiere.csv");
+
+                Animal[] animals = getAnimals();
 
                 if (textBox.Text != "")
                 {
-                    for (int i = 0; i < tiere.Length; i++)
+                    for (int i = 0; i < animals.Length; i++)
                     {
-                        string[] data = tiere[i].Split(';');
-
-                        if (data[0].ToLower().Contains(textBox.Text.ToLower()))
+                        if (animals[i].trivialname.ToLower().Contains(textBox.Text.ToLower()))
                         {
                             Button newBtn = new Button();
-                            newBtn.Content = data[0];
+                            newBtn.Content = animals[i].trivialname;
                             newBtn.Name = "";
                             grid.Children.Add(newBtn);
                         }
                     }
                 }
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -65,18 +74,16 @@ namespace TierSichtung
             ManageGrid();
         }
 
-        public void LoadRecent()
+        public void LoadRecent() //verknüpft
         {
             try
             {
-                string[] tiere = File.ReadAllLines("Tiere.csv");
+                Animal[] animals = getAnimals();
 
-                for (int i = tiere.Length - 1; i > tiere.Length - 4; i--)
+                for (int i = animals.Length - 1; i > animals.Length - 4; i--)
                 {
-                    string[] data = tiere[i].Split(';');
-
                     Button newBtn = new Button();
-                    newBtn.Content = data[0];
+                    newBtn.Content = animals[i].trivialname;
                     newBtn.Name = "";
                     grid.Children.Add(newBtn);
                 }
@@ -138,6 +145,20 @@ namespace TierSichtung
             {
 
             }
+        }
+
+        public Animal[] getAnimals()        //Holt die animals aus json und liefer animal array
+        {
+            string url = "http://localhost/ItSpot_Backend/restAPI.php/animal";
+
+            HttpClient client = new HttpClient();
+            var response = client.GetAsync(url).Result;
+
+            string responseString = response.Content.ReadAsStringAsync().Result;
+
+            Animal[] animals = JsonSerializer.Deserialize<Animal[]>(responseString);
+
+            return animals;
         }
     }
 }

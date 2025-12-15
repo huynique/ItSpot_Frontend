@@ -6,17 +6,17 @@
         xmlns:local="clr-namespace:TierSichtung"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" SizeChanged="WindowSizeChange">
-    
+
     <Grid Cursor="">
-        <Label Content="ItSpot" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label Content="ItSpot" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" FontFamily="pack://application:,,,/fonts/Goudy Heavyface Std Regular.otf#Goudy Heavyface Std"/>
         <TextBox Width="181" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0" TextChanged="Search"/>
         <Button x:Name="filter" Width="20" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200,100,0,0" Click="OpenFilter"/>
-        <ListBox x:Name="filterListe" Margin="220,100,480,224" Visibility="Hidden" SelectionChanged="FilterChange">
+        <ListBox x:Name="filterListe" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="Visible" SelectionChanged="FilterChange" Width="89" Height="65" Margin="225,99,0,0">
             <CheckBox>#Item1</CheckBox>
             <CheckBox>#Item2</CheckBox>
             <CheckBox>#Item3</CheckBox>
         </ListBox>
-        <Button x:Name="anmeldeButton" Content="Anmelden" Width="50" Height="50" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,50,50,0" Click="LoginClick"/>
+        <Button x:Name="anmeldeButton" Content="LogIn" Width="72" Height="31" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,31,0" Click="LoginClick" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="16" FontFamily="pack://application:,,,/fonts/Goudy%20Heavyface%20Std%20Regular.otf#Goudy Heavyface Std"/>
         <ScrollViewer x:Name="scroll" VerticalScrollBarVisibility="Visible" VerticalAlignment="Stretch" Margin="0,169,0,0">
             <UniformGrid x:Name="grid" Rows="3" Columns="3" Width="{Binding ActualWidth, ElementName=scroll}" Height="{Binding ActualHeight, ElementName=scroll}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </ScrollViewer>
