@@ -52,7 +52,7 @@ namespace TierSichtung
                     {
                         if (animals[i].trivialname.ToLower().Contains(textBox.Text.ToLower()))
                         {
-                            CreateButton(animals[i].trivialname);
+                            CreateButton(animals[i]);
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace TierSichtung
 
                 for (int i = animals.Length - 1; i > animals.Length || i > 0; i--)
                 {
-                    CreateButton(animals[i].trivialname);
+                    CreateButton(animals[i]);
                 }
             }
             catch (Exception ex)
@@ -112,14 +112,14 @@ namespace TierSichtung
         }
         */
 
-        private void CreateButton(string trivialname)
+        private void CreateButton(Animal animal)
         {
             Button newBtn = new Button();
-            newBtn.Content = trivialname;
+            newBtn.Content = animal.trivialname;
             newBtn.Name = "";
             newBtn.Click += (s, ev) =>
             {
-                SightingWindow sightingWindow = new SightingWindow(trivialname);
+                SightingWindow sightingWindow = new SightingWindow(animal.sciencename);
                 sightingWindow.Show();
             };
             newBtn.Margin = new Thickness(10);

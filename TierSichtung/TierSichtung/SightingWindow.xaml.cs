@@ -19,10 +19,10 @@ namespace TierSichtung
     /// </summary>
     public partial class SightingWindow : Window
     {
-        public SightingWindow(string trivialname)
+        public SightingWindow(string name)
         {
             InitializeComponent();
-            this.Title = "Sichtung: " + trivialname;
+            this.Title = name;
         }
     }
 }

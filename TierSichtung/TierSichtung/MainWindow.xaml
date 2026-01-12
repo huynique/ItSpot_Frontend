@@ -14,12 +14,12 @@
         <!-- (1) Unterste Ebene: Gradient -->
         <Rectangle Panel.ZIndex="0" IsHitTestVisible="False">
             <Rectangle.Fill>
-                <RadialGradientBrush Opacity="1.0">
+                <RadialGradientBrush Opacity="1.0" Center="0.2,0.4">
                     <RadialGradientBrush.RelativeTransform>
                         <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="3.5" ScaleY="1.9"/>
                     </RadialGradientBrush.RelativeTransform>
-                    <GradientStop Color="#FFA0DF97" Offset="0"/>
-                    <GradientStop Color="#FFFDEEBA" Offset="1"/>
+                    <GradientStop Color="#FFB9E9B2" Offset="0"/>
+                    <GradientStop Color="#FFFDE591" Offset="1"/>
                 </RadialGradientBrush>
             </Rectangle.Fill>
         </Rectangle>
@@ -57,7 +57,7 @@
                        FontSize="48"
                        FontWeight="Bold"
                        FontFamily="Goudy Std"
-                       Foreground="#FF81BB41"
+                       Foreground="#FF689A31"
                        HorizontalAlignment="Center">
                     <Label.Effect>
                         <DropShadowEffect BlurRadius="5.5"
@@ -106,6 +106,7 @@
                     <CheckBox Content="#Item2"/>
                     <CheckBox Content="#Item3"/>
                 </ListBox>
+
             </StackPanel>
 
             <!-- CONTENT -->
