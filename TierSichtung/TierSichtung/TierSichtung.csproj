@@ -11,12 +11,14 @@
 
   <ItemGroup>
     <None Remove="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf" />
+    <None Remove="landscape.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="landscape.png" />
   </ItemGroup>
 
 </Project>

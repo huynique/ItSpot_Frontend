@@ -52,17 +52,10 @@ namespace TierSichtung
                     {
                         if (animals[i].trivialname.ToLower().Contains(textBox.Text.ToLower()))
                         {
-                            Button newBtn = new Button();
-                            newBtn.Content = animals[i].trivialname;
-                            newBtn.Name = "";
-                            grid.Children.Add(newBtn);
+                            CreateButton(animals[i].trivialname);
                         }
                     }
                 }
-
-
-
-
 
 
             }
@@ -71,7 +64,7 @@ namespace TierSichtung
                 MessageBox.Show("Fehler: " + ex);
             }
 
-            ManageGrid();
+            //ManageGrid();
         }
 
         public void LoadRecent() //verknüpft
@@ -80,12 +73,9 @@ namespace TierSichtung
             {
                 Animal[] animals = getAnimals();
 
-                for (int i = animals.Length - 1; i > animals.Length - 4; i--)
+                for (int i = animals.Length - 1; i > animals.Length || i > 0; i--)
                 {
-                    Button newBtn = new Button();
-                    newBtn.Content = animals[i].trivialname;
-                    newBtn.Name = "";
-                    grid.Children.Add(newBtn);
+                    CreateButton(animals[i].trivialname);
                 }
             }
             catch (Exception ex)
@@ -94,11 +84,13 @@ namespace TierSichtung
             }
         }
 
+        /*
         private void WindowSizeChange(object sender, SizeChangedEventArgs e)
         {
             ManageGrid();
         }
 
+        
         void ManageGrid()
         {
             if (grid.Children.Count / 3 <= 3)
@@ -117,6 +109,26 @@ namespace TierSichtung
             {
                 grid.Height = scroll.ActualHeight + ((scroll.ActualHeight / 3) * grid.Rows);
             }
+        }
+        */
+
+        private void CreateButton(string trivialname)
+        {
+            Button newBtn = new Button();
+            newBtn.Content = trivialname;
+            newBtn.Name = "";
+            newBtn.Click += (s, ev) =>
+            {
+                SightingWindow sightingWindow = new SightingWindow(trivialname);
+                sightingWindow.Show();
+            };
+            newBtn.Margin = new Thickness(10);
+            newBtn.MinHeight = 100;
+            newBtn.MinWidth = 100;
+            newBtn.FontSize = 16;
+            newBtn.FontFamily = new FontFamily("Goudy Std");
+            newBtn.Style = (Style)FindResource("GridItemButton");
+            grid.Children.Add(newBtn);
         }
 
         private void LoginClick(object sender, RoutedEventArgs e)
@@ -147,7 +159,7 @@ namespace TierSichtung
             }
         }
 
-        public Animal[] getAnimals()        //Holt die animals aus json und liefer animal array
+        public Animal[] getAnimals()    //Holt die animals aus json und liefer animal array
         {
             string url = "http://localhost/ItSpot_Backend/restAPI.php/animal";
 
