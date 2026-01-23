@@ -21,6 +21,8 @@ namespace TierSichtung
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        string filter = "";
         public MainWindow()
         {
             InitializeComponent();
@@ -29,12 +31,16 @@ namespace TierSichtung
 
         private void Search(object sender, TextChangedEventArgs e)  //verknüpft
         {
-            TextBox textBox = sender as TextBox;
+            FinalSearch();
 
-            if (textBox.Text == "")
+        }
+
+        public void FinalSearch()
+        {
+            if (searchBox.Text == "")
             {
                 grid.Children.Clear();
-                LoadRecent();
+                LoadAnimals(getAnimals(filter));
             }
             else
             {
@@ -44,13 +50,13 @@ namespace TierSichtung
             try
             {
 
-                Animal[] animals = getAnimals();
+                Animal[] animals = getAnimals(filter);
 
-                if (textBox.Text != "")
+                if (searchBox.Text != "")
                 {
                     for (int i = 0; i < animals.Length; i++)
                     {
-                        if (animals[i].trivialname.ToLower().Contains(textBox.Text.ToLower()))
+                        if (animals[i].trivialname.ToLower().StartsWith(searchBox.Text.ToLower()))
                         {
                             CreateButton(animals[i]);
                         }
@@ -73,7 +79,23 @@ namespace TierSichtung
             {
                 Animal[] animals = getAnimals();
 
-                for (int i = animals.Length - 1; i > animals.Length || i > 0; i--)
+                for (int i = animals.Length - 1; i > animals.Length || i >= 0; i--)
+                {
+                    CreateButton(animals[i]);
+                }
+               // MessageBox.Show("Filter: " + filter);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler: " + ex);
+            }
+        }
+
+        public void LoadAnimals(Animal[] animals) 
+        {
+            try
+            {
+                for (int i = 0; i < animals.Length; i++)
                 {
                     CreateButton(animals[i]);
                 }
@@ -115,11 +137,11 @@ namespace TierSichtung
         private void CreateButton(Animal animal)
         {
             Button newBtn = new Button();
-            newBtn.Content = animal.trivialname;
+            newBtn.Content = animal.trivialname + "\n(" + animal.sciencename + ")";
             newBtn.Name = "";
             newBtn.Click += (s, ev) =>
             {
-                SightingWindow sightingWindow = new SightingWindow(animal.sciencename);
+                SightingWindow sightingWindow = new SightingWindow(animal);
                 sightingWindow.Show();
             };
             newBtn.Margin = new Thickness(10);
@@ -149,21 +171,12 @@ namespace TierSichtung
             }
         }
 
-        private void FilterChange(object sender, SelectionChangedEventArgs e)
+        public Animal[] getAnimals(string filterlist)    //Holt die animals aus json und liefer animal array
         {
-            ListBox list = sender as ListBox;
-
-            foreach (ListBoxItem selection in list.Items)
-            {
-
-            }
-        }
-
-        public Animal[] getAnimals()    //Holt die animals aus json und liefer animal array
-        {
-            string url = "http://localhost/ItSpot_Backend/restAPI.php/animal";
+            string url = "http://localhost/ItSpot_Backend/restAPI.php/animal/getFilteredAnimal?" + filterlist;
 
             HttpClient client = new HttpClient();
+
             var response = client.GetAsync(url).Result;
 
             string responseString = response.Content.ReadAsStringAsync().Result;
@@ -171,6 +184,119 @@ namespace TierSichtung
             Animal[] animals = JsonSerializer.Deserialize<Animal[]>(responseString);
 
             return animals;
+        }
+
+        public Sightings[] getSightings()    //Holt die animals aus json und liefer animal array
+        {
+            string url = "http://localhost/ItSpot_Backend/restAPI.php/sightings";
+
+            HttpClient client = new HttpClient();
+
+            var response = client.GetAsync(url).Result;
+
+            string responseString = response.Content.ReadAsStringAsync().Result;
+
+            Sightings[] sightings = JsonSerializer.Deserialize<Sightings[]>(responseString);
+
+            return sightings;
+        }
+
+        //string url = "http://localhost/ItSpot_Backend/restAPI.php/animal/getFilteredAnimal?family=mammal";
+
+        public Animal[] getAnimals()    //Holt die animals aus json und liefer animal array
+        {
+            string url = "http://localhost/ItSpot_Backend/restAPI.php/animal";
+
+            HttpClient client = new HttpClient();
+
+            var response = client.GetAsync(url).Result;
+
+            string responseString = response.Content.ReadAsStringAsync().Result;
+
+            Animal[] animals = JsonSerializer.Deserialize<Animal[]>(responseString);
+
+            return animals;
+        }
+
+        private void AboutClick(object sender, RoutedEventArgs e)
+        {
+            AboutUs about = new AboutUs();
+            about.Show();
+        }
+
+        private void MammalCheck(object sender, RoutedEventArgs e)
+        {
+            ClearFilter(0);
+            if (MammalCheckBox.IsChecked == false)
+            {
+                filter = "";
+                grid.Children.Clear();
+                FinalSearch();
+                return;
+            }
+            filter = "family=mammal";
+            grid.Children.Clear();
+            FinalSearch();
+        }
+
+        private void BirdCheck(object sender, RoutedEventArgs e)
+        {
+            ClearFilter(1);
+            if (BirdCheckBox.IsChecked == false)
+            {
+                filter = "";
+                grid.Children.Clear();
+                FinalSearch();
+                return;
+            }
+            filter = "family=bird";
+
+            grid.Children.Clear();
+            FinalSearch();
+        }
+
+        private void FishCheck(object sender, RoutedEventArgs e)
+        {
+            ClearFilter(2);
+            if (FishCheckBox.IsChecked == false)
+            {
+                filter = "";
+                grid.Children.Clear();
+                FinalSearch();
+                return;
+            }
+            filter = "family=fish";
+            grid.Children.Clear();
+            FinalSearch();
+        }
+
+        private void ReptileCheck(object sender, RoutedEventArgs e)
+        {
+            ClearFilter(3);
+            if (ReptileCheckBox.IsChecked == false)
+            {
+                filter = "";
+                grid.Children.Clear();
+                FinalSearch();
+                return;
+            }
+            filter = "family=reptile";
+            grid.Children.Clear();
+            FinalSearch();
+        }
+
+        public void ClearFilter(int it)
+        {
+            for (int i = 0; i < filterListe.Items.Count; i++)
+            {
+                if (filterListe.Items[i] is CheckBox checkBox)
+                { 
+                    if (i != it)
+                    {
+                        checkBox.IsChecked = false;
+                    }
+                }
+            }
         }
     }
 }

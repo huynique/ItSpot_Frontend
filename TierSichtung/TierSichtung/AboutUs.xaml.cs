@@ -15,23 +15,13 @@ using System.Windows.Shapes;
 namespace TierSichtung
 {
     /// <summary>
-    /// Interaktionslogik für SightingWindow.xaml
+    /// Interaktionslogik für AboutUs.xaml
     /// </summary>
-    public partial class SightingWindow : Window
+    public partial class AboutUs : Window
     {
-
-        public SightingWindow(Animal animal)
+        public AboutUs()
         {
             InitializeComponent();
-            this.Title = animal.sciencename;
-
-            trivial_lbl.Content = animal.trivialname;
-            science_lbl.Content = animal.sciencename;
-
-
-
-
-           
         }
     }
 }

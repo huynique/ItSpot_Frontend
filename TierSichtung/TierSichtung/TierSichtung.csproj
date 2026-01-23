@@ -10,15 +10,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Custom-Icon-Design-Mono-General-4-Filter.512.png" />
     <None Remove="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf" />
     <None Remove="landscape.png" />
+    <None Remove="lupe.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Custom-Icon-Design-Mono-General-4-Filter.512.png" />
     <Resource Include="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="landscape.png" />
+    <Resource Include="lupe.png" />
   </ItemGroup>
 
 </Project>

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="ItSpot"
+        WindowState="Maximized"
         Width="1200"
         Height="800"
         MinWidth="600">
@@ -18,8 +19,8 @@
                     <RadialGradientBrush.RelativeTransform>
                         <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="3.5" ScaleY="1.9"/>
                     </RadialGradientBrush.RelativeTransform>
-                    <GradientStop Color="#FFB9E9B2" Offset="0"/>
-                    <GradientStop Color="#FFFDE591" Offset="1"/>
+                    <GradientStop Color="#FFDBFFD6" Offset="0"/>
+                    <GradientStop Color="#FFFFEDB1" Offset="1"/>
                 </RadialGradientBrush>
             </Rectangle.Fill>
         </Rectangle>
@@ -52,19 +53,21 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Column="1"
+                <Label
                        Content="ItSpot"
                        FontSize="48"
                        FontWeight="Bold"
                        FontFamily="Goudy Std"
-                       Foreground="#FF689A31"
-                       HorizontalAlignment="Center">
+                       Foreground="#FFA6CB7E"
+                       HorizontalAlignment="Left" Margin="29,0,0,0">
                     <Label.Effect>
                         <DropShadowEffect BlurRadius="5.5"
                                           ShadowDepth="3"
                                           Opacity="0.6" Direction="282"/>
                     </Label.Effect>
                 </Label>
+
+
 
                 <Button Grid.Column="2"
                         Content="LogIn"
@@ -77,6 +80,17 @@
                         <DropShadowEffect Color="#FFBDBB59" Direction="273" ShadowDepth="3" BlurRadius="5" Opacity="0.925"/>
                     </Button.Effect>
                 </Button>
+                <Button Grid.Column="2"
+                    Content="About Us"
+                    FontSize="26"
+                    FontFamily="Goudy Std"
+                    HorizontalAlignment="Right"
+                    Click="AboutClick"
+                    Style="{StaticResource LoginHoverButton}" Foreground="#FFFFFDF0" Margin="203,10,150,10" Width="197">
+                    <Button.Effect>
+                        <DropShadowEffect Color="#FFBDBB59" Direction="273" ShadowDepth="3" BlurRadius="5" Opacity="0.925"/>
+                    </Button.Effect>
+                </Button>
             </Grid>
 
             <!-- SUCH- & FILTERBEREICH -->
@@ -85,7 +99,8 @@
                         Margin="50 40"
                         VerticalAlignment="Center">
 
-                <TextBox Width="177"
+                <TextBox x:Name="searchBox"
+                         Width="177"
                          Height="30"
                          TextChanged="Search"
                          BorderBrush="{x:Null}"
@@ -99,12 +114,22 @@
                 <Button Width="30"
                         Height="30"
                         Margin="10,0"
-                        Click="OpenFilter"/>
+                        Click="OpenFilter" BorderBrush="{x:Null}" Foreground="{x:Null}"
+                        Style="{StaticResource FlatButton}"
+                       
+                        
 
-                <ListBox x:Name="filterListe" SelectionChanged="FilterChange">
-                    <CheckBox Content="#Item1"/>
-                    <CheckBox Content="#Item2"/>
-                    <CheckBox Content="#Item3"/>
+                    >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/Custom-Icon-Design-Mono-General-4-Filter.512.png" Opacity="1"/>
+                    </Button.Background>
+                </Button>
+
+                <ListBox x:Name="filterListe"  BorderBrush="{x:Null}" Background="{x:Null}">
+                    <CheckBox x:Name="MammalCheckBox" Checked="MammalCheck" Content="Mammal" Unchecked="MammalCheck"/>
+                    <CheckBox x:Name="BirdCheckBox" Checked="BirdCheck" Content="Bird" Unchecked="BirdCheck"/>
+                    <CheckBox x:Name="FishCheckBox" Checked="FishCheck" Content="Fish" Unchecked="FishCheck"/>
+                    <CheckBox x:Name="ReptileCheckBox" Checked="ReptileCheck" Content="Reptile" Unchecked="ReptileCheck"/>
                 </ListBox>
 
             </StackPanel>
