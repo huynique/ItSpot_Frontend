@@ -22,11 +22,11 @@
             </Label.Effect>
         </Label>
         <Label x:Name="science_lbl" Content="Science Name" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="38" Margin="35,78,0,0" VerticalAlignment="Top" Width="348" FontFamily="Goudy Std" FontSize="20" Background="{x:Null}" Foreground="#FF87B258"/>
-        <Label Content="Posted:" HorizontalAlignment="Left" Height="43" Margin="595,141,0,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="Location:" HorizontalAlignment="Left" Height="39" Margin="595,97,0,0" VerticalAlignment="Top" Width="153" Foreground="#FF9CC66F" FontFamily="Goudy Std" FontSize="18"/>
-        <Label Content="Positive:" HorizontalAlignment="Left" Height="43" Margin="595,189,0,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="Negative:" HorizontalAlignment="Left" Height="43" Margin="595,237,0,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="last seen:" HorizontalAlignment="Left" Height="43" Margin="595,280,0,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="status:" HorizontalAlignment="Left" Height="43" Margin="595,328,0,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+        <Label Content="Posted:" HorizontalAlignment="Right" Height="43" Margin="0,146,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+        <Label Content="Location:" HorizontalAlignment="Right" Height="39" Margin="0,102,25,0" VerticalAlignment="Top" Width="153" Foreground="#FF9CC66F" FontFamily="Goudy Std" FontSize="18"/>
+        <Label Content="Positive:" HorizontalAlignment="Right" Height="43" Margin="0,189,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+        <Label Content="Negative:" HorizontalAlignment="Right" Height="43" Margin="0,237,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+        <Label Content="last seen:" HorizontalAlignment="Right" Height="43" Margin="0,280,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+        <Label Content="status:" HorizontalAlignment="Right" Height="43" Margin="0,323,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
     </Grid>
 </Window>

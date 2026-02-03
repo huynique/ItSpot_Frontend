@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,11 +29,23 @@ namespace TierSichtung
 
             trivial_lbl.Content = animal.trivialname;
             science_lbl.Content = animal.sciencename;
-
-
-
-
            
         }
+
+        public Animal[] getAnimals()    //Holt die animals aus json und liefer animal array
+        {
+            string url = "http://localhost/ItSpot_Backend/restAPI.php/animal";
+
+            HttpClient client = new HttpClient();
+
+            var response = client.GetAsync(url).Result;
+
+            string responseString = response.Content.ReadAsStringAsync().Result;
+
+            Animal[] animals = JsonSerializer.Deserialize<Animal[]>(responseString);
+
+            return animals;
+        }
+
     }
 }

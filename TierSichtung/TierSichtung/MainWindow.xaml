@@ -125,11 +125,38 @@
                     </Button.Background>
                 </Button>
 
-                <ListBox x:Name="filterListe"  BorderBrush="{x:Null}" Background="{x:Null}">
-                    <CheckBox x:Name="MammalCheckBox" Checked="MammalCheck" Content="Mammal" Unchecked="MammalCheck"/>
-                    <CheckBox x:Name="BirdCheckBox" Checked="BirdCheck" Content="Bird" Unchecked="BirdCheck"/>
-                    <CheckBox x:Name="FishCheckBox" Checked="FishCheck" Content="Fish" Unchecked="FishCheck"/>
-                    <CheckBox x:Name="ReptileCheckBox" Checked="ReptileCheck" Content="Reptile" Unchecked="ReptileCheck"/>
+
+                <ListBox x:Name="filterListe"
+         BorderBrush="{x:Null}" Background="{x:Null}"
+         SelectionMode="Single">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <!-- damit der ganze Zeilenbereich klickbar ist -->
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+                    <ListBox.Resources>
+                        <Style TargetType="RadioButton">
+                            <Setter Property="GroupName" Value="Family"/>
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Content="{Binding}"
+                         IsChecked="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem},
+                                             Path=IsSelected, Mode=TwoWay}"
+                         Checked="FilterChanged"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                    <!-- Items als einfache Strings; Template macht den Radio draus -->
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Mammal</sys:String>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Bird</sys:String>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Fish</sys:String>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">Reptile</sys:String>
+                    <sys:String xmlns:sys="clr-namespace:System;assembly=mscorlib">(Alle)</sys:String>
                 </ListBox>
 
             </StackPanel>

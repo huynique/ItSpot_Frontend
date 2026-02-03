@@ -1,4 +1,264 @@
-﻿using System.IO;
+﻿using System;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+namespace TierSichtung
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private static readonly HttpClient _http = new HttpClient();
+
+        // Für schnell wechselnde Suchanfragen: alte Requests abbrechen
+        private CancellationTokenSource _searchCts;
+
+        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        private string filter = "";
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            // Asynchron erst laden, wenn Window sichtbar ist
+            this.Loaded += async (_, __) =>
+            {
+                await LoadRecentAsync();
+            };
+        }
+
+        // =========================
+        // === Such-/Filter-Flow ===
+        // =========================
+
+        private async void Search(object sender, TextChangedEventArgs e)
+        {
+            // Jede neue Eingabe: alte Suche abbrechen
+            _searchCts?.Cancel();
+            _searchCts = new CancellationTokenSource();
+
+            try
+            {
+                await FinalSearchAsync(_searchCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // Ignorieren – ein neuer Request läuft schon
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler: " + ex.Message);
+            }
+        }
+
+
+        private async void FilterChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is RadioButton rb && rb.Content is string text)
+            {
+                filter = text switch
+                {
+                    "Mammal" => "family=mammal",
+                    "Bird" => "family=bird",
+                    "Fish" => "family=fish",
+                    "Reptile" => "family=reptile",
+                    "(Alle)" => "",
+                    _ => ""
+                };
+
+                _searchCts?.Cancel();
+                _searchCts = new CancellationTokenSource();
+
+                try
+                {
+                    await FinalSearchAsync(_searchCts.Token);
+                }
+                catch (OperationCanceledException) { }
+                catch (Exception ex) { MessageBox.Show("Fehler: " + ex.Message); }
+            }
+        }
+
+
+        /// <summary>
+        /// Zentraler Such-/Anzeige-Flow (früher: FinalSearch)
+        /// </summary>
+        private async Task FinalSearchAsync(CancellationToken ct = default)
+        {
+            grid.Children.Clear();
+
+            // Wenn nichts im Suchfeld → einfach gefilterte oder alle Tiere laden
+            if (string.IsNullOrWhiteSpace(searchBox.Text))
+            {
+                var animals = await GetAnimalsAsync(filter, ct);
+                await RenderAnimalsAsync(animals, ct);
+                return;
+            }
+
+            // Wenn Suchtext vorhanden → alle (mit Filter) laden und clientseitig filtern
+            try
+            {
+                var animals = await GetAnimalsAsync(filter, ct);
+                string query = searchBox.Text.Trim().ToLowerInvariant();
+
+                foreach (var a in animals)
+                {
+                    ct.ThrowIfCancellationRequested();
+
+                    if (!string.IsNullOrEmpty(a?.trivialname) &&
+                        a.trivialname.ToLowerInvariant().StartsWith(query))
+                    {
+                        CreateButton(a);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler: " + ex.Message);
+            }
+        }
+
+        private async Task LoadRecentAsync(CancellationToken ct = default)
+        {
+            try
+            {
+                var animals = await GetAnimalsAsync(ct: ct);
+
+                // jüngste zuerst, wie in deinem Code
+                for (int i = animals.Length - 1; i >= 0; i--)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    CreateButton(animals[i]);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // ok
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler: " + ex.Message);
+            }
+        }
+
+        private async Task RenderAnimalsAsync(Animal[] animals, CancellationToken ct = default)
+        {
+            try
+            {
+                foreach (var a in animals)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    CreateButton(a);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler: " + ex.Message);
+            }
+        }
+
+        // =========================
+        // === UI / Buttons etc. ===
+        // =========================
+
+        private void CreateButton(Animal animal)
+        {
+            var newBtn = new Button
+            {
+                Content = animal.trivialname,
+                Margin = new Thickness(10),
+                MinHeight = 100,
+                MinWidth = 100,
+                FontSize = 16,
+                FontFamily = new FontFamily("Goudy Std"),
+                Style = (Style)FindResource("GridItemButton")
+            };
+
+            newBtn.Click += (s, ev) =>
+            {
+                var sightingWindow = new SightingWindow(animal);
+                sightingWindow.Show();
+            };
+
+            grid.Children.Add(newBtn);
+        }
+
+        private void LoginClick(object sender, RoutedEventArgs e)
+        {
+            var login = new Window1();
+            login.Show();
+        }
+
+        private void OpenFilter(object sender, RoutedEventArgs e)
+        {
+            filterListe.Visibility = (filterListe.Visibility == Visibility.Visible)
+                ? Visibility.Hidden
+                : Visibility.Visible;
+        }
+
+        private void AboutClick(object sender, RoutedEventArgs e)
+        {
+            var about = new AboutUs();
+            about.Show();
+        }
+
+        // =========================
+        // === HTTP / Back-End  ===
+        // =========================
+
+        public async Task<Animal[]> GetAnimalsAsync(string filterlist = "", CancellationToken ct = default)
+        {
+            string url = string.IsNullOrWhiteSpace(filterlist)
+                ? "http://localhost/ItSpot_Backend/restAPI.php/animal"
+                : $"http://localhost/ItSpot_Backend/restAPI.php/animal/getFilteredAnimal?{filterlist}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync(ct);
+
+            var animals = JsonSerializer.Deserialize<Animal[]>(json, _jsonOptions);
+            return animals ?? Array.Empty<Animal>();
+        }
+
+        public async Task<Sightings[]> GetSightingsAsync(CancellationToken ct = default)
+        {
+            string url = "http://localhost/ItSpot_Backend/restAPI.php/sightings";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync(ct);
+
+            var sightings = JsonSerializer.Deserialize<Sightings[]>(json, _jsonOptions);
+            return sightings ?? Array.Empty<Sightings>();
+        }
+    }
+}
+
+
+
+/*
+ * using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -79,11 +339,13 @@ namespace TierSichtung
             {
                 Animal[] animals = getAnimals();
 
-                for (int i = animals.Length - 1; i > animals.Length || i >= 0; i--)
+
+                for (int i = animals.Length - 1; i >= 0; i--)
                 {
                     CreateButton(animals[i]);
                 }
-               // MessageBox.Show("Filter: " + filter);
+
+                // MessageBox.Show("Filter: " + filter);
             }
             catch (Exception ex)
             {
@@ -132,12 +394,12 @@ namespace TierSichtung
                 grid.Height = scroll.ActualHeight + ((scroll.ActualHeight / 3) * grid.Rows);
             }
         }
-        */
+        
 
-        private void CreateButton(Animal animal)
+private void CreateButton(Animal animal)
         {
             Button newBtn = new Button();
-            newBtn.Content = animal.trivialname + "\n(" + animal.sciencename + ")";
+            newBtn.Content = animal.trivialname;
             newBtn.Name = "";
             newBtn.Click += (s, ev) =>
             {
@@ -201,7 +463,7 @@ namespace TierSichtung
             return sightings;
         }
 
-        //string url = "http://localhost/ItSpot_Backend/restAPI.php/animal/getFilteredAnimal?family=mammal";
+        //string url = "http://localhost/ItSpot_Backend/restAPI.php/animal/getFilteredAnimal?family=mammal"; test
 
         public Animal[] getAnimals()    //Holt die animals aus json und liefer animal array
         {
@@ -224,79 +486,20 @@ namespace TierSichtung
             about.Show();
         }
 
-        private void MammalCheck(object sender, RoutedEventArgs e)
-        {
-            ClearFilter(0);
-            if (MammalCheckBox.IsChecked == false)
-            {
-                filter = "";
-                grid.Children.Clear();
-                FinalSearch();
-                return;
-            }
-            filter = "family=mammal";
-            grid.Children.Clear();
-            FinalSearch();
-        }
 
-        private void BirdCheck(object sender, RoutedEventArgs e)
+        private void FilterChanged(object sender, RoutedEventArgs e)
         {
-            ClearFilter(1);
-            if (BirdCheckBox.IsChecked == false)
-            {
-                filter = "";
-                grid.Children.Clear();
-                FinalSearch();
-                return;
-            }
-            filter = "family=bird";
+            if (MammalRadio.IsChecked == true) filter = "family=mammal";
+            else if (BirdRadio.IsChecked == true) filter = "family=bird";
+            else if (FishRadio.IsChecked == true) filter = "family=fish";
+            else if (ReptileRadio.IsChecked == true) filter = "family=reptile";
+            else filter = ""; // (Alle)
 
             grid.Children.Clear();
             FinalSearch();
         }
 
-        private void FishCheck(object sender, RoutedEventArgs e)
-        {
-            ClearFilter(2);
-            if (FishCheckBox.IsChecked == false)
-            {
-                filter = "";
-                grid.Children.Clear();
-                FinalSearch();
-                return;
-            }
-            filter = "family=fish";
-            grid.Children.Clear();
-            FinalSearch();
-        }
 
-        private void ReptileCheck(object sender, RoutedEventArgs e)
-        {
-            ClearFilter(3);
-            if (ReptileCheckBox.IsChecked == false)
-            {
-                filter = "";
-                grid.Children.Clear();
-                FinalSearch();
-                return;
-            }
-            filter = "family=reptile";
-            grid.Children.Clear();
-            FinalSearch();
-        }
-
-        public void ClearFilter(int it)
-        {
-            for (int i = 0; i < filterListe.Items.Count; i++)
-            {
-                if (filterListe.Items[i] is CheckBox checkBox)
-                { 
-                    if (i != it)
-                    {
-                        checkBox.IsChecked = false;
-                    }
-                }
-            }
-        }
     }
 }
+*/
