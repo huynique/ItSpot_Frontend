@@ -10,19 +10,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\LogIn_Icon.png" />
     <None Remove="Custom-Icon-Design-Mono-General-4-Filter.512.png" />
     <None Remove="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf" />
+    <None Remove="icon_itspot.png" />
     <None Remove="landscape.png" />
     <None Remove="lupe.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Custom-Icon-Design-Mono-General-4-Filter.512.png" />
+    <PackageReference Include="GMap.NET.Core" Version="2.1.7" />
+    <PackageReference Include="GMap.NET.WinPresentation" Version="2.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\Custom-Icon-Design-Mono-General-4-Filter.512.png" />
+    <Resource Include="assets\LogIn_Icon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="landscape.png" />
-    <Resource Include="lupe.png" />
+    <Resource Include="assets\icon_itspot.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\landscape.png" />
+    <Resource Include="assets\lupe.png" />
   </ItemGroup>
 
 </Project>

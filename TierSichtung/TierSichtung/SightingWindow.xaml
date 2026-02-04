@@ -4,29 +4,76 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TierSichtung"
+        xmlns:gmap="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
         mc:Ignorable="d"
-        Title="SightingWindow" Height="450" Width="800">
+        WindowState="Maximized"
+        Icon="/assets/icon_itspot.png"
+        Title="" Height="450" Width="800">
+    
+    
+    
     <Grid>
-        <!-- (1) Unterste Ebene: Gradient -->
-        <!-- (2) darüber: Hintergrundbild -->
-
-        <!-- (1) Unterste Ebene: Gradient -->
-        <!-- (2) darüber: Hintergrundbild -->
-
-        <!-- (1) Unterste Ebene: Gradient -->
+        <!-- Hintergrund -->
         <Rectangle Panel.ZIndex="0" IsHitTestVisible="False" Fill="#FFF0FFD8"/>
 
-        <Label x:Name="trivial_lbl" Content="Trivialname" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="53" Margin="35,34,0,0" VerticalAlignment="Top" Width="492" FontFamily="Goudy Std" FontSize="32" Background="{x:Null}" Foreground="#FFB4DF86">
+        <!-- Deine Labels bleiben wie gehabt -->
+        <Label x:Name="trivial_lbl" Content="Trivialname"
+               HorizontalContentAlignment="Left" HorizontalAlignment="Left"
+               Height="53" Margin="35,34,0,0" VerticalAlignment="Top" Width="492"
+               FontFamily="Goudy Std" FontSize="32" Background="{x:Null}" Foreground="#FFB4DF86">
             <Label.Effect>
                 <DropShadowEffect Direction="278" BlurRadius="1.9" ShadowDepth="2" Color="#FFCECECE"/>
             </Label.Effect>
         </Label>
-        <Label x:Name="science_lbl" Content="Science Name" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Height="38" Margin="35,78,0,0" VerticalAlignment="Top" Width="348" FontFamily="Goudy Std" FontSize="20" Background="{x:Null}" Foreground="#FF87B258"/>
-        <Label Content="Posted:" HorizontalAlignment="Right" Height="43" Margin="0,146,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="Location:" HorizontalAlignment="Right" Height="39" Margin="0,102,25,0" VerticalAlignment="Top" Width="153" Foreground="#FF9CC66F" FontFamily="Goudy Std" FontSize="18"/>
-        <Label Content="Positive:" HorizontalAlignment="Right" Height="43" Margin="0,189,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="Negative:" HorizontalAlignment="Right" Height="43" Margin="0,237,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="last seen:" HorizontalAlignment="Right" Height="43" Margin="0,280,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
-        <Label Content="status:" HorizontalAlignment="Right" Height="43" Margin="0,323,44,0" VerticalAlignment="Top" Width="134" Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+
+        <Label x:Name="science_lbl" Content="Science Name"
+               HorizontalContentAlignment="Left" HorizontalAlignment="Left"
+               Height="38" Margin="35,78,0,0" VerticalAlignment="Top" Width="348"
+               FontFamily="Goudy Std" FontSize="20" Background="{x:Null}" Foreground="#FF87B258"/>
+
+        <Label x:Name="date_lbl" Content="Posted:" HorizontalAlignment="Right"
+               Height="43" Margin="0,34,45,0" VerticalAlignment="Top" Width="223"
+               Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+
+        <Label x:Name="lastseen_lbl" Content="last seen:"
+               HorizontalAlignment="Right" Height="43" Margin="0,73,45,0"
+               VerticalAlignment="Top" Width="223" Foreground="#FFA0C37A"
+               FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+
+        <Label x:Name="location_lbl" Content="Location:" HorizontalAlignment="Right"
+               Height="39" Margin="0,247,45,0" VerticalAlignment="Top" Width="223"
+               Foreground="#FF9CC66F" FontFamily="Goudy Std" FontSize="18"/>
+
+        <Label x:Name="pos_lbl" Content="Positive:" HorizontalAlignment="Left"
+               Height="43" Margin="35,303,0,50" VerticalAlignment="Bottom" Width="134"
+               Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+
+        <Label x:Name="neg_lbl" Content="Negative:" HorizontalAlignment="Left"
+               Height="43" Margin="35,346,0,10" VerticalAlignment="Bottom" Width="134"
+               Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+
+        <Label x:Name="status_lbl" Content="status:" HorizontalAlignment="Center"
+               HorizontalContentAlignment="Center" Height="38" Margin="0,346,0,30"
+               VerticalAlignment="Bottom" Width="134" Foreground="#FFA0C37A"
+               FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
+
+        <!-- === MAP UNTER „Location:“ ===
+             Rechts ausgerichtet, unterhalb des Location-Labels.
+             Passe Width/Height/Margins an, damit es optisch für dich passt. -->
+        <!-- direkt unter deinem location_lbl -->
+        <Border x:Name="MapHost"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Top"
+        Margin="0,309,45,0"
+        Width="465" Height="289"
+        CornerRadius="10"
+        BorderBrush="#88A6CB7E" BorderThickness="1"
+        Background="White">
+            <!-- WICHTIG: KEIN <gmap:GMapControl> mehr im XAML -->
+            <!-- Der Designer sieht nur den Border, nicht die Map -->
+            <TextBlock Text="Map wird zur Laufzeit geladen…" 
+               Foreground="#999" VerticalAlignment="Center" 
+               HorizontalAlignment="Center" />
+        </Border>
     </Grid>
 </Window>

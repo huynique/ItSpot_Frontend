@@ -5,8 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TierSichtung"
         mc:Ignorable="d"
-        Title="LogIn" Height="450" Width="400">
+        Icon="/assets/LogIn_Icon.png"
+        Title="" Height="450" Width="400" Background="#FFE6FDE1">
     <Grid>
-        
+        <Image Margin="35,57,238,184" Source="/assets/icon_itspot.png" Stretch="Uniform"/>
+        <TextBlock HorizontalAlignment="Left" Height="16" Margin="200,118,0,0" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Top" Width="130" Foreground="#FF0E7009" FontFamily="Goudy Std">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFA6FF86"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Language="de-de" Text="Username"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Height="16" Margin="200,154,0,0" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Top" Width="130" FontFamily="Goudy Std" Foreground="#FF0E7009">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFA6FF86"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background><Run Language="de-de" Text="Password"/></TextBlock>
+        <Button Content="LogIn" HorizontalAlignment="Left" Height="27" Margin="239,190,0,0" VerticalAlignment="Top" Width="52" Click="Button_Click" BorderBrush="#FFBEFF90" FontFamily="Goudy Std" Foreground="#FF478C2F">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFBEFF90"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Label Content="new User? register here" HorizontalAlignment="Left" Height="25" Margin="200,222,0,0" VerticalAlignment="Top" Width="140" FontFamily="Goudy Std" FontSize="10" FontStyle="Italic" Background="{x:Null}" Foreground="#FF484848"/>
+        <Label Content="help" HorizontalAlignment="Left" Height="26" Margin="24,376,0,0" VerticalAlignment="Top" Width="34" FontFamily="Goudy Std" FontSize="10" FontStyle="Italic" Background="{x:Null}" Foreground="#FF484848"/>
+        <Label Content="support" HorizontalAlignment="Left" Height="25" Margin="85,377,0,0" VerticalAlignment="Top" Width="53" FontFamily="Goudy Std" FontSize="10" FontStyle="Italic" Background="{x:Null}" Foreground="#FF484848"/>
+        <Label Content="email" HorizontalAlignment="Left" Height="25" Margin="164,377,0,0" VerticalAlignment="Top" Width="53" FontFamily="Goudy Std" FontSize="10" FontStyle="Italic" Background="{x:Null}" Foreground="#FF484848"/>
+
     </Grid>
 </Window>

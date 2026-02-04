@@ -4,11 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="ItSpot"
+        Background="Transparent"
         WindowState="Maximized"
+        Icon="/assets/LogIn_Icon.png"
+        Title=""
         Width="1200"
         Height="800"
         MinWidth="600">
+    <!-- WindowState="Maximized"  sieht doof aus wegen bild-->
+
 
     <!-- Kein Window.Background mehr; wir schichten im Grid -->
     <Grid>
@@ -26,11 +30,11 @@
         </Rectangle>
 
         <!-- (2) darüber: Hintergrundbild -->
-        <Image Source="/landscape.png"
+        <Image Source="/assets/landscape.png"
                Panel.ZIndex="1"
                IsHitTestVisible="False" Stretch="UniformToFill" >
             <Image.OpacityMask>
-                <ImageBrush ImageSource="/landscape.png"/>
+                <ImageBrush ImageSource="/assets/landscape.png"/>
             </Image.OpacityMask>
         </Image>
 
@@ -91,6 +95,17 @@
                         <DropShadowEffect Color="#FFBDBB59" Direction="273" ShadowDepth="3" BlurRadius="5" Opacity="0.925"/>
                     </Button.Effect>
                 </Button>
+                <Button
+                    Content="Post"
+                    FontSize="26"
+                    FontFamily="Goudy Std"
+                    HorizontalAlignment="Center"
+                    Click="PostClick"
+                    Style="{StaticResource LoginHoverButton}" Foreground="#FFFFFDF0" Margin="0,0,0,0" Width="98" Grid.ColumnSpan="3">
+                    <Button.Effect>
+                        <DropShadowEffect Color="#FFBDBB59" Direction="273" ShadowDepth="3" BlurRadius="5" Opacity="0.925"/>
+                    </Button.Effect>
+                </Button>
             </Grid>
 
             <!-- SUCH- & FILTERBEREICH -->
@@ -121,7 +136,7 @@
 
                     >
                     <Button.Background>
-                        <ImageBrush ImageSource="/Custom-Icon-Design-Mono-General-4-Filter.512.png" Opacity="1"/>
+                        <ImageBrush ImageSource="/assets/Custom-Icon-Design-Mono-General-4-Filter.512.png" Opacity="1"/>
                     </Button.Background>
                 </Button>
 
@@ -172,5 +187,6 @@
                              VerticalAlignment="Top"/>
             </ScrollViewer>
         </Grid>
+        <Image Margin="641,233,52,84" Source="/assets/icon_itspot.png" Stretch="Uniform"/>
     </Grid>
 </Window>

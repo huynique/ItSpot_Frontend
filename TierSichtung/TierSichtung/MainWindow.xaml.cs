@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace TierSichtung
@@ -96,35 +97,55 @@ namespace TierSichtung
         {
             grid.Children.Clear();
 
-            // Wenn nichts im Suchfeld → einfach gefilterte oder alle Tiere laden
+            // Sightings per Backend sortieren lassen (empfohlen)
+            var sightings = await GetSightingsAsync(
+                filterlist: filter,
+                orderBy: "date",
+                orderDir: "DESC",
+                ct: ct);
+
+            // Wenn kein Suchtext → gleich rendern
             if (string.IsNullOrWhiteSpace(searchBox.Text))
             {
-                var animals = await GetAnimalsAsync(filter, ct);
-                await RenderAnimalsAsync(animals, ct);
+                await RenderSightingsAsync(sightings, ct);
                 return;
             }
 
-            // Wenn Suchtext vorhanden → alle (mit Filter) laden und clientseitig filtern
+            // Mit Suchtext: clientseitig nach trivialname filtern
             try
             {
-                var animals = await GetAnimalsAsync(filter, ct);
                 string query = searchBox.Text.Trim().ToLowerInvariant();
 
-                foreach (var a in animals)
+                foreach (var s in sightings)
                 {
                     ct.ThrowIfCancellationRequested();
 
-                    if (!string.IsNullOrEmpty(a?.trivialname) &&
-                        a.trivialname.ToLowerInvariant().StartsWith(query))
+                    // Nur wenn Backend trivialname mitliefert (JOIN)
+                    var name = s?.trivialname ?? string.Empty;
+                    if (name.ToLowerInvariant().StartsWith(query))
                     {
-                        CreateButton(a);
+                        CreateButton(s);
                     }
                 }
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException) { throw; }
+            catch (Exception ex)
             {
-                throw;
+                MessageBox.Show("Fehler: " + ex.Message);
             }
+        }
+
+        private async Task RenderSightingsAsync(Sightings[] sightings, CancellationToken ct = default)
+        {
+            try
+            {
+                foreach (var s in sightings)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    CreateButton(s);
+                }
+            }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 MessageBox.Show("Fehler: " + ex.Message);
@@ -135,39 +156,16 @@ namespace TierSichtung
         {
             try
             {
-                var animals = await GetAnimalsAsync(ct: ct);
+                // jüngste zuerst über Backend
+                var sightings = await GetSightingsAsync(orderBy: "date", orderDir: "DESC", ct: ct);
 
-                // jüngste zuerst, wie in deinem Code
-                for (int i = animals.Length - 1; i >= 0; i--)
+                foreach (var s in sightings)
                 {
                     ct.ThrowIfCancellationRequested();
-                    CreateButton(animals[i]);
+                    CreateButton(s);
                 }
             }
-            catch (OperationCanceledException)
-            {
-                // ok
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fehler: " + ex.Message);
-            }
-        }
-
-        private async Task RenderAnimalsAsync(Animal[] animals, CancellationToken ct = default)
-        {
-            try
-            {
-                foreach (var a in animals)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    CreateButton(a);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 MessageBox.Show("Fehler: " + ex.Message);
@@ -178,11 +176,33 @@ namespace TierSichtung
         // === UI / Buttons etc. ===
         // =========================
 
-        private void CreateButton(Animal animal)
+        private void CreateButton(Sightings s)
         {
+            var label = s.trivialname ?? $"Tier #{s.animalid}";
+            var dateText = s.date?.ToString("dd.MM.yyyy") ?? "";
+            // Datum prüfen ob weniger als 7 Tage her
+            if (s.date != null)
+            {
+                DateTime sightingDate = s.date.Value;
+                DateTime currentDate = DateTime.Now;
+                TimeSpan difference = currentDate - sightingDate;
+                if (difference.TotalDays <= 7)
+                {
+                    dateText = (int)difference.TotalDays + " Days Ago";
+                }
+                else
+                {
+                    dateText = sightingDate.ToString("dd.MM.yyyy");
+                }
+            }
+            else
+            {
+                dateText = "Date: Unknown";
+            }
+
             var newBtn = new Button
             {
-                Content = animal.trivialname,
+            Content = string.IsNullOrEmpty(dateText) ? label : $"{label} • {dateText}",
                 Margin = new Thickness(10),
                 MinHeight = 100,
                 MinWidth = 100,
@@ -191,10 +211,10 @@ namespace TierSichtung
                 Style = (Style)FindResource("GridItemButton")
             };
 
-            newBtn.Click += (s, ev) =>
+            newBtn.Click += (s_, ev) =>
             {
-                var sightingWindow = new SightingWindow(animal);
-                sightingWindow.Show();
+                var win = new SightingWindow(s);
+                win.Show();
             };
 
             grid.Children.Add(newBtn);
@@ -239,20 +259,42 @@ namespace TierSichtung
             return animals ?? Array.Empty<Animal>();
         }
 
-        public async Task<Sightings[]> GetSightingsAsync(CancellationToken ct = default)
+        public async Task<Sightings[]> GetSightingsAsync(
+    string filterlist = "",
+    string orderBy = "date",
+    string orderDir = "DESC",
+    CancellationToken ct = default)
         {
-            string url = "http://localhost/ItSpot_Backend/restAPI.php/sightings";
+            string baseUrl = "http://localhost/ItSpot_Backend/restAPI.php/sighting";
+
+            // Query zusammenbauen
+            var parts = new System.Collections.Generic.List<string>();
+            if (!string.IsNullOrWhiteSpace(filterlist))
+                parts.Add(filterlist);
+            if (!string.IsNullOrWhiteSpace(orderBy))
+                parts.Add($"orderBy={Uri.EscapeDataString(orderBy)}");
+            if (!string.IsNullOrWhiteSpace(orderDir))
+                parts.Add($"orderDir={Uri.EscapeDataString(orderDir)}");
+
+            string url = parts.Count > 0 ? $"{baseUrl}?{string.Join("&", parts)}" : baseUrl;
 
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             using var response = await _http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync(ct);
-
             var sightings = JsonSerializer.Deserialize<Sightings[]>(json, _jsonOptions);
             return sightings ?? Array.Empty<Sightings>();
         }
+
+        private void PostClick(object sender, RoutedEventArgs e)
+        {
+            var postWindow = new PostWindow();
+            postWindow.Show();
+        }
     }
+
+
 }
 
 

@@ -8,21 +8,20 @@ namespace TierSichtung
 {
     public class Sightings
     {
-        int sightingsid { get; set; }
-        string date { get; set; }
+        public int sightingsid { get; set; }
+        public DateTime? date { get; set; }       // ACHTUNG: Datumstyp kann string sein – ggf. anpassen!
+        public int animalid { get; set; }
+        public string ort { get; set; }
+        public int positive { get; set; }
+        public int negative { get; set; }
+        public int status { get; set; }
+        public int count { get; set; }
 
-        int animalid { get; set; }
+        // Aus dem JOIN (empfohlen, siehe Backend):
 
-        string ort {  get; set; }
-
-        int positive { get; set; }
-        int negative { get; set; }
-
-        int status { get; set; }
-
-        int count { get; set; }
-
-
-
+        public DateTime? lastseen { get; set; }
+        public string trivialname { get; set; }
+        public string sciencename { get; set; }
+        public string family { get; set; }
     }
 }
