@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace TierSichtung
 {
@@ -190,7 +191,7 @@ namespace TierSichtung
                 {
                     if (difference.TotalDays < 1)
                     {
-                        dateText = (int)difference.TotalHours + " Hours Ago";
+                        dateText = "Today";
                     }
                     else if ((int)difference.TotalDays == 1)
                     {
@@ -216,8 +217,22 @@ namespace TierSichtung
                 MinWidth = 100,
                 FontSize = 16,
                 FontFamily = new FontFamily("Goudy Std"),
-                Style = (Style)FindResource("GridItemButton")
+                Style = (Style)FindResource("GridItemButton"),
+
             };
+
+            var img = new BitmapImage();
+            img.BeginInit();
+            img.UriSource = new Uri("pack://application:,,,/assets/buttons.jpg", UriKind.Absolute);
+            img.CacheOption = BitmapCacheOption.OnLoad;
+            img.EndInit();
+
+            newBtn.Background = new ImageBrush(img)
+            {
+                Stretch = Stretch.UniformToFill,
+                Opacity = 0.9
+            };
+
 
             newBtn.Click += (s_, ev) =>
             {

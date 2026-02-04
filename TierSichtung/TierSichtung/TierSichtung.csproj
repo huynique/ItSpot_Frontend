@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\buttons.jpg" />
     <None Remove="assets\LogIn_Icon.png" />
     <None Remove="Custom-Icon-Design-Mono-General-4-Filter.512.png" />
     <None Remove="fonts\Goudy Heavyface Std Regular\Goudy Heavyface Std Regular.otf" />
@@ -24,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="assets\buttons.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="assets\Custom-Icon-Design-Mono-General-4-Filter.512.png" />
     <Resource Include="assets\LogIn_Icon.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
