@@ -17,6 +17,9 @@ namespace TierSichtung
         public int status { get; set; }
         public int count { get; set; }
 
+        public double lat { get; set; }
+        public double lng { get; set; }
+
         // Aus dem JOIN (empfohlen, siehe Backend):
 
         public DateTime? lastseen { get; set; }

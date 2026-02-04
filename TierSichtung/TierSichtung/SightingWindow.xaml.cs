@@ -26,6 +26,7 @@ namespace TierSichtung
             // Deine Labels wie gehabt
             trivial_lbl.Content = _sighting.trivialname ?? $"Tier #{_sighting.animalid}";
             science_lbl.Content = _sighting.sciencename ?? "";
+            count_lbl.Content = $"Count: {_sighting.count}";
             date_lbl.Content = $"Posted: {FormatDate(_sighting.date)}";
             lastseen_lbl.Content = $"last seen: {FormatDate(_sighting.lastseen)}";
             location_lbl.Content = $"Location: {_sighting.ort ?? "-"}";
@@ -142,6 +143,7 @@ namespace TierSichtung
             // 20 = DWMWA_USE_IMMERSIVE_DARK_MODE / alternative blur flags möglich
             DwmSetWindowAttribute(windowHelper.Handle, 20, ref trueValue, sizeof(int));
         }
+
 
     }
 

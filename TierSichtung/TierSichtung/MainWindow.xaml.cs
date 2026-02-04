@@ -188,7 +188,15 @@ namespace TierSichtung
                 TimeSpan difference = currentDate - sightingDate;
                 if (difference.TotalDays <= 7)
                 {
-                    dateText = (int)difference.TotalDays + " Days Ago";
+                    if (difference.TotalDays < 1)
+                    {
+                        dateText = (int)difference.TotalHours + " Hours Ago";
+                    }
+                    else if ((int)difference.TotalDays == 1)
+                    {
+                        dateText = "Yesterday";
+                    } else 
+                        dateText = (int)difference.TotalDays + " Days Ago";
                 }
                 else
                 {
@@ -224,6 +232,20 @@ namespace TierSichtung
         {
             var login = new Window1();
             login.Show();
+        }
+
+        private void PostClick(object sender, RoutedEventArgs e)
+        {
+            // Aufrufende Stelle
+            var dlg = new PostSightingWindow
+            {
+                Owner = this // z. B. dein Hauptfenster
+            };
+            var ok = dlg.ShowDialog() == true;
+            if (ok)
+            {
+                // Weiterverarbeiten / Refresh etc.
+            }
         }
 
         private void OpenFilter(object sender, RoutedEventArgs e)
@@ -287,11 +309,6 @@ namespace TierSichtung
             return sightings ?? Array.Empty<Sightings>();
         }
 
-        private void PostClick(object sender, RoutedEventArgs e)
-        {
-            var postWindow = new PostWindow();
-            postWindow.Show();
-        }
     }
 
 

@@ -75,5 +75,8 @@
                Foreground="#999" VerticalAlignment="Center" 
                HorizontalAlignment="Center" />
         </Border>
+        <Label x:Name="count_lbl" Content="Count:" HorizontalAlignment="Left"
+            Height="43" Margin="35,0,0,93" VerticalAlignment="Bottom" Width="134"
+            Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
     </Grid>
 </Window>

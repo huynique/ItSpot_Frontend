@@ -1,12 +1,202 @@
-﻿<Window x:Class="TierSichtung.PostWindow"
+﻿<Window x:Class="TierSichtung.PostSightingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TierSichtung"
         mc:Ignorable="d"
-        Title="PostWindow" Height="450" Width="800">
-    <Grid>
-        
+        Icon="/assets/LogIn_Icon.png"
+        Title=""
+        Width="680" Height="760"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize">
+
+    <Grid Background="#FFF0FFD8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="*"/>
+            <!-- Form -->
+            <RowDefinition Height="Auto"/>
+            <!-- Actions -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="18,14" Background="#19FFFFFF">
+            <TextBlock Text="New Sighting"
+                       HorizontalAlignment="Center"
+                       FontFamily="Goudy Std" FontSize="24"
+                       Foreground="#6AA84F">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="3" Direction="271" ShadowDepth="1" Color="#FFB8C3B2" Opacity="0.84"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </Border>
+
+        <!-- FORM -->
+        <ScrollViewer Grid.Row="1" Padding="22" VerticalScrollBarVisibility="Auto">
+            <Grid x:Name="FormGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Animal -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Date -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Ort -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Positive -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Negative -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Count -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Status -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Map Label -->
+                    <RowDefinition Height="220"/>
+                    <!-- Map Host -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Validation -->
+                </Grid.RowDefinitions>
+
+                <!-- Animal -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,8" Text="Animal" TextAlignment="Center" VerticalAlignment="Center"
+                           FontFamily="Goudy Std" Foreground="#4C722F"/>
+                <!-- Variante A: ComboBox (empfohlen) -->
+                <ComboBox x:Name="AnimalCombo" VerticalContentAlignment="Center"
+                          Grid.Row="0" Grid.Column="1" Margin="10" Height="32"
+                          DisplayMemberPath="trivialname"
+                          SelectedValuePath="animalid" Foreground="#FF306400" FontFamily="Goudy Std">
+                    <ComboBox.BorderBrush>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF306400"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.BorderBrush>
+                    <ComboBox.Background>
+                        <LinearGradientBrush EndPoint="0,1">
+                            <GradientStop Color="#FFF0F0F0"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.Background>
+                    <!-- Du befüllst die ItemsSource im Code-Behind mit getAnimals -->
+                </ComboBox>
+                <!-- Variante B (falls du erstmal nur ID eingeben willst):
+                <TextBox x:Name="AnimalIdBox" Grid.Row="0" Grid.Column="1" Height="32"/>
+                -->
+
+                <!-- Date -->
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,8" Text="Date" TextAlignment="Center" VerticalAlignment="Center"
+                           FontFamily="Goudy Std" Foreground="#4C722F"/>
+                <DatePicker x:Name="DatePicker" 
+                            Grid.Row="1" Grid.Column="1" Margin="10"
+                            SelectedDateFormat="Short" FontFamily="Goudy Std" Foreground="#FF306400">
+                    <DatePicker.BorderBrush>
+                        <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
+                            <GradientStop Color="#FF306400"/>
+                            <GradientStop Color="#FF8399A9" Offset="0.375"/>
+                            <GradientStop Color="#FF718597" Offset="0.375"/>
+                            <GradientStop Color="#FFA1D4A2" Offset="0.983"/>
+                        </LinearGradientBrush>
+                    </DatePicker.BorderBrush>
+                </DatePicker>
+
+                <!-- Ort / Adresse -->
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,8" Text="Location / Address" TextAlignment="Center" VerticalAlignment="Center"
+                           FontFamily="Goudy Std" Foreground="#4C722F"/>
+                <DockPanel Grid.Row="2" Grid.Column="1" LastChildFill="True">
+                    <Button x:Name="PreviewMapBtn"
+                            DockPanel.Dock="Right" Margin="8,0,10,0" Padding="12,6"
+                            Click="PreviewMap_Click"
+                            Content="Show Map" Height="32" Width="106" FontFamily="Goudy Std" Background="#FF9AD49B" Foreground="#FF306400">
+                        <Button.BorderBrush>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF4F9B34"/>
+                                <GradientStop Color="#FFB6E6A4" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.BorderBrush>
+                    </Button>
+                    <TextBox x:Name="OrtBox" Margin="10"  Height="32" FontFamily="Goudy Std" Foreground="#FF306400" VerticalContentAlignment="Center">
+                        <TextBox.BorderBrush>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FF306400"/>
+                                <GradientStop Color="White" Offset="1"/>
+                            </LinearGradientBrush>
+                        </TextBox.BorderBrush>
+                    </TextBox>
+                </DockPanel>
+
+
+
+                <!-- Count -->
+                <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,8" Text="Count" TextAlignment="Center" VerticalAlignment="Center"
+                           FontFamily="Goudy Std" Foreground="#4C722F"/>
+                <TextBox x:Name="CountBox" Grid.Row="5" Margin="10" Grid.Column="1" VerticalContentAlignment="Center" Height="32" Background="White" FontFamily="Goudy Std" Foreground="#FF306400" >
+                    <TextBox.BorderBrush>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF306400"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBox.BorderBrush>
+                </TextBox>
+
+
+
+                <!-- Map Label -->
+                <TextBlock Grid.Row="7" Grid.Column="0" Margin="0,10,10,0" Text="" TextAlignment="Center" VerticalAlignment="Top"
+                           FontFamily="Goudy Std" Foreground="#4C722F" Grid.ColumnSpan="2"/>
+                <!-- Map Host -->
+                <!-- Map-Host im XAML (z. B. in PostSightingWindow.xaml) -->
+                <Border x:Name="MapHost"
+        Grid.Row="8" Grid.ColumnSpan="2"
+        CornerRadius="10" BorderThickness="1"
+        BorderBrush="#88A6CB7E" Background="White">
+                    <Grid>
+                        <TextBlock Text="Karte: Klicken, um Position zu wählen"
+                   Foreground="#999" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <!-- Optional: Lat/Lng anzeigen -->
+                <StackPanel Grid.Row="9" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,8,0,0">
+                    <TextBlock Text="lat: " Foreground="#4C722F" Margin="0,0,8,0" FontFamily="Goudy Std"/>
+                    <TextBlock x:Name="LatText" Margin="0,0,16,0"/>
+                    <TextBlock Text="lng: " Foreground="#4C722F" Margin="0,0,8,0" FontFamily="Goudy Std"/>
+                    <TextBlock x:Name="LngText"/>
+                </StackPanel>
+
+                <!-- Validation -->
+                <TextBlock x:Name="ValidationText"
+                           Grid.Row="9" Grid.ColumnSpan="2" Margin="0,16,0,0"
+                           Foreground="#C62828" TextWrapping="Wrap"/>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- ACTIONS -->
+        <DockPanel Grid.Row="2" LastChildFill="False" Margin="22" >
+            <Button Content="Abbrechen"
+                    DockPanel.Dock="Right" Margin="10,0,0,0" Padding="18,8"
+                    Click="Cancel_Click" FontFamily="Goudy Std" Foreground="#FF726A5D" Background="#FFDACCA1">
+                <Button.BorderBrush>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF9D773C"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.BorderBrush>
+            </Button>
+            <Button Content="Posten"
+                    DockPanel.Dock="Right" Padding="18,8"
+                    Background="#6AA84F" Foreground="#FF346512"
+                    Click="Post_Click" FontFamily="Goudy Std">
+                <Button.BorderBrush>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF306400"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.BorderBrush>
+            </Button>
+        </DockPanel>
     </Grid>
 </Window>
