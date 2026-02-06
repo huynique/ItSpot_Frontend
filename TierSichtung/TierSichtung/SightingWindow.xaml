@@ -31,7 +31,7 @@
                Height="38" Margin="35,78,0,0" VerticalAlignment="Top" Width="348"
                FontFamily="Goudy Std" FontSize="20" Background="{x:Null}" Foreground="#FF87B258"/>
 
-        <Label x:Name="date_lbl" Content="Posted:" HorizontalAlignment="Right"
+        <Label x:Name="date_lbl" Content="spotted:" HorizontalAlignment="Right"
                Height="43" Margin="0,34,45,0" VerticalAlignment="Top" Width="223"
                Foreground="#FFA0C37A" FontFamily="Goudy Std" FontSize="18" Background="{x:Null}"/>
 

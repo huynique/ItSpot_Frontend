@@ -22,10 +22,10 @@
 
         <!-- Header -->
         <Border Grid.Row="0" Padding="18,14" Background="#19FFFFFF">
-            <TextBlock Text="New Sighting"
+            <TextBlock Text="Insert Sighting"
                        HorizontalAlignment="Center"
                        FontFamily="Goudy Std" FontSize="24"
-                       Foreground="#6AA84F">
+                       Foreground="#6AA84F" Margin="0,4,0,-4">
                 <TextBlock.Effect>
                     <DropShadowEffect BlurRadius="3" Direction="271" ShadowDepth="1" Color="#FFB8C3B2" Opacity="0.84"/>
                 </TextBlock.Effect>
@@ -176,7 +176,7 @@
 
         <!-- ACTIONS -->
         <DockPanel Grid.Row="2" LastChildFill="False" Margin="22" >
-            <Button Content="Abbrechen"
+            <Button Content="Cancel"
                     DockPanel.Dock="Right" Margin="10,0,0,0" Padding="18,8"
                     Click="Cancel_Click" FontFamily="Goudy Std" Foreground="#FF726A5D" Background="#FFDACCA1">
                 <Button.BorderBrush>
@@ -186,7 +186,7 @@
                     </LinearGradientBrush>
                 </Button.BorderBrush>
             </Button>
-            <Button Content="Posten"
+            <Button Content="Post"
                     DockPanel.Dock="Right" Padding="18,8"
                     Background="#6AA84F" Foreground="#FF346512"
                     Click="Post_Click" FontFamily="Goudy Std">

@@ -27,7 +27,7 @@ namespace TierSichtung
             trivial_lbl.Content = _sighting.trivialname ?? $"Tier #{_sighting.animalid}";
             science_lbl.Content = _sighting.sciencename ?? "";
             count_lbl.Content = $"Count: {_sighting.count}";
-            date_lbl.Content = $"Posted: {FormatDate(_sighting.date)}";
+            date_lbl.Content = $"spotted: {FormatDate(_sighting.date)}";
             lastseen_lbl.Content = $"last seen: {FormatDate(_sighting.lastseen)}";
             location_lbl.Content = $"Location: {_sighting.ort ?? "-"}";
             pos_lbl.Content = $"Positive: {_sighting.positive}";

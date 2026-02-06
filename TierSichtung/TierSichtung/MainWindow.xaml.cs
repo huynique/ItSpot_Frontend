@@ -26,7 +26,7 @@ namespace TierSichtung
             PropertyNameCaseInsensitive = true
         };
 
-        private string filter = "";
+        private string filter = "";  //filter platzhalter
 
         public MainWindow()
         {
@@ -39,9 +39,9 @@ namespace TierSichtung
             };
         }
 
-        // =========================
-        // === Such-/Filter-Flow ===
-        // =========================
+   
+        // --- Such-/Filter-Flow ---
+        
 
         private async void Search(object sender, TextChangedEventArgs e)
         {
@@ -74,7 +74,7 @@ namespace TierSichtung
                     "Bird" => "family=bird",
                     "Fish" => "family=fish",
                     "Reptile" => "family=reptile",
-                    "(Alle)" => "",
+                    "(All)" => "",
                     _ => ""
                 };
 
@@ -112,7 +112,7 @@ namespace TierSichtung
                 return;
             }
 
-            // Mit Suchtext: clientseitig nach trivialname filtern
+            // mit suchtext von textbox nach trivialname filtern
             try
             {
                 string query = searchBox.Text.Trim().ToLowerInvariant();
@@ -123,7 +123,7 @@ namespace TierSichtung
 
                     // Nur wenn Backend trivialname mitliefert (JOIN)
                     var name = s?.trivialname ?? string.Empty;
-                    if (name.ToLowerInvariant().StartsWith(query))
+                    if (name.ToLowerInvariant().StartsWith(query) || name.ToLowerInvariant().Contains(query))  // starts with oder contains
                     {
                         CreateButton(s);
                     }
@@ -153,11 +153,11 @@ namespace TierSichtung
             }
         }
 
-        private async Task LoadRecentAsync(CancellationToken ct = default)
+        private async Task LoadRecentAsync(CancellationToken ct = default)  // lädt zuletzt gepostete sichtungen
         {
             try
             {
-                // jüngste zuerst über Backend
+                
                 var sightings = await GetSightingsAsync(orderBy: "date", orderDir: "DESC", ct: ct);
 
                 foreach (var s in sightings)
@@ -173,14 +173,14 @@ namespace TierSichtung
             }
         }
 
-        // =========================
-        // === UI / Buttons etc. ===
-        // =========================
+   
+        // --- UI / Buttons etc. ---
 
-        private void CreateButton(Sightings s)
+        private void CreateButton(Sightings s)  // Sichtungsbutton erstellen
         {
             var label = s.trivialname ?? $"Tier #{s.animalid}";
             var dateText = s.date?.ToString("dd.MM.yyyy") ?? "";
+
             // Datum prüfen ob weniger als 7 Tage her
             if (s.date != null)
             {
@@ -206,8 +206,10 @@ namespace TierSichtung
             }
             else
             {
-                dateText = "Date: Unknown";
+                dateText = "Date Unknown";
             }
+
+            // style über code-behind
 
             var newBtn = new Button
             {
@@ -230,13 +232,13 @@ namespace TierSichtung
             newBtn.Background = new ImageBrush(img)
             {
                 Stretch = Stretch.UniformToFill,
-                Opacity = 0.9
+                Opacity = 1
             };
 
 
             newBtn.Click += (s_, ev) =>
             {
-                var win = new SightingWindow(s);
+                var win = new SightingWindow(s);   // damit öffnet sich das SightingWindow mit den details
                 win.Show();
             };
 
@@ -263,7 +265,7 @@ namespace TierSichtung
             }
         }
 
-        private void OpenFilter(object sender, RoutedEventArgs e)
+        private void OpenFilter(object sender, RoutedEventArgs e)  // filter ein-/ausblenden
         {
             filterListe.Visibility = (filterListe.Visibility == Visibility.Visible)
                 ? Visibility.Hidden
@@ -276,9 +278,9 @@ namespace TierSichtung
             about.Show();
         }
 
-        // =========================
-        // === HTTP / Back-End  ===
-        // =========================
+
+        // --- HTTP / Back-End / PHP ---
+       
 
         public async Task<Animal[]> GetAnimalsAsync(string filterlist = "", CancellationToken ct = default)
         {
@@ -331,7 +333,9 @@ namespace TierSichtung
 
 
 
-/*
+/*    
+ *    das war noch davor ohne performance optimierung von ai, ohne async/await und mit fehleranfälliger suchlogik
+ *    
  * using System.IO;
 using System.Net.Http;
 using System.Text;

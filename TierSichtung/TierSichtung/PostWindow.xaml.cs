@@ -39,7 +39,7 @@ namespace TierSichtung
                 // ... dein vorhandener Map + Animal-Lade Code ...
                 try
                 {
-                    AnimalCombo.ItemsSource = await GetAnimalsAsync();
+                    AnimalCombo.ItemsSource = await GetAnimalsAsync();  // animal als vorwahlen laden
 
                     _map = new GMapControl
                     {
@@ -55,7 +55,7 @@ namespace TierSichtung
                     GMaps.Instance.Mode = AccessMode.ServerOnly;
                     _map.MapProvider = OpenStreetMapProvider.Instance;
 
-                    _map.Position = new PointLatLng(51.7189, 8.7575); // Paderborn Standard
+                    _map.Position = new PointLatLng(51.7189, 8.7575); // Paderborn als Standard
                     _map.MouseLeftButtonUp += Map_MouseLeftButtonUp;
                 }
                 catch (Exception ex)
@@ -67,7 +67,7 @@ namespace TierSichtung
         }
 
 
-        private async void Post_Click(object sender, RoutedEventArgs e)
+        private async void Post_Click(object sender, RoutedEventArgs e)    // Sighting posten
         {
             ValidationText.Text = "";
 
@@ -103,7 +103,7 @@ namespace TierSichtung
                 var res = await _http.PostAsync(url, content);
                 res.EnsureSuccessStatusCode();
 
-                MessageBox.Show("Sighting erfolgreich gepostet ✅", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Sighting erfolgreich gepostet :D", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
                 DialogResult = true;
                 Close();
             }
@@ -199,7 +199,7 @@ namespace TierSichtung
 
         private static DateTime _lastGeoCall = DateTime.MinValue;
 
-        private async Task<(double lat, double lng)?> GeocodeAsync(string address)
+        private async Task<(double lat, double lng)?> GeocodeAsync(string address)  // Nominatim OSM Geocoding für MAP, voll idk
         {
             if (string.IsNullOrWhiteSpace(address)) return null;
 
@@ -242,7 +242,7 @@ namespace TierSichtung
         }
 
 
-        public async Task<Animal[]> GetAnimalsAsync()
+        public async Task<Animal[]> GetAnimalsAsync()  // holt alle animals aus der datenbank
         {
             string url = "http://localhost/ItSpot_Backend/restAPI.php/animal";
 
